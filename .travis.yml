@@ -53,8 +53,19 @@ install:
   - HADDOCK=${HADDOCK-true}
   - INSTALLED=${INSTALLED-true}
   - travis_retry cabal update -v
+<<<<<<< HEAD
   - sed -i.bak 's/^jobs:/-- jobs:/' ${HOME}/.cabal/config
   - rm -fv cabal.project.local
+=======
+  - "sed -i.bak 's/^jobs:/-- jobs:/' ${HOME}/.cabal/config"
+  - rm -fv cabal.project cabal.project.local
+  - "if [ $HCNUMVER -ge 70800 ]; then sed -i.bak 's/-- ghc-options:.*/ghc-options: -j2/' ${HOME}/.cabal/config; fi"
+  - grep -Ev -- '^\s*--' ${HOME}/.cabal/config | grep -Ev '^\s*$'
+  - "printf 'packages: \"servant\" \"servant-client\" \"servant-client-core\" \"servant-docs\" \"servant-foreign\" \"servant-server\" \"doc/tutorial\" \"doc/cookbook/db-postgres-pool\" \"doc/cookbook/jwt-and-basic-auth\" \"doc/cookbook/db-sqlite-simple\" \"doc/cookbook/basic-auth\" \"doc/cookbook/https\" \"doc/cookbook/structuring-apis\" \"doc/cookbook/using-custom-monad\" \"doc/cookbook/file-upload\"\\n' > cabal.project"
+  - "echo 'constraints: foundation >=0.0.14,memory <0.14.12 || >0.14.12' >> cabal.project"
+  - "echo 'allow-newer: servant-js:servant-foreign,servant-auth-server:http-types,servant-multipart:lens,servant-multipart:resourcet' >> cabal.project"
+  - cat cabal.project
+>>>>>>> 77600e6... Support resourcet-1.2
   - if [ -f "servant/configure.ac" ]; then
       (cd "servant"; autoreconf -i);
     fi
@@ -99,11 +110,18 @@ script:
   - mv "servant"/dist/servant-*.tar.gz "servant-client"/dist/servant-client-*.tar.gz "servant-client-core"/dist/servant-client-core-*.tar.gz "servant-docs"/dist/servant-docs-*.tar.gz "servant-foreign"/dist/servant-foreign-*.tar.gz "servant-server"/dist/servant-server-*.tar.gz "doc/tutorial"/dist/tutorial-*.tar.gz ${DISTDIR}/
   - cd ${DISTDIR}
   - find . -maxdepth 1 -name '*.tar.gz' -exec tar -xvf '{}' \;
+<<<<<<< HEAD
   - "printf 'packages: servant-*/*.cabal servant-client-*/*.cabal servant-client-core-*/*.cabal servant-docs-*/*.cabal servant-foreign-*/*.cabal servant-server-*/*.cabal tutorial-*/*.cabal\n' > cabal.project"
 
   # Allow-newer and other cabal.project amendments
   - "echo 'allow-newer: servant-js:servant, servant-js:servant-foreign' >> cabal.project"
 
+=======
+  - "printf 'packages: servant-*/*.cabal servant-client-*/*.cabal servant-client-core-*/*.cabal servant-docs-*/*.cabal servant-foreign-*/*.cabal servant-server-*/*.cabal tutorial-*/*.cabal cookbook-db-postgres-pool-*/*.cabal cookbook-jwt-and-basic-auth-*/*.cabal cookbook-db-sqlite-simple-*/*.cabal cookbook-basic-auth-*/*.cabal cookbook-https-*/*.cabal cookbook-structuring-apis-*/*.cabal cookbook-using-custom-monad-*/*.cabal cookbook-file-upload-*/*.cabal\\n' > cabal.project"
+  - "echo 'constraints: foundation >=0.0.14,memory <0.14.12 || >0.14.12' >> cabal.project"
+  - "echo 'allow-newer: servant-js:servant-foreign,servant-auth-server:http-types,servant-multipart:lens,servant-multipart:resourcet' >> cabal.project"
+  - cat cabal.project
+>>>>>>> 77600e6... Support resourcet-1.2
   - echo -en 'travis_fold:end:unpack\\r'
   - echo Building... && echo -en 'travis_fold:start:build\\r'
   # this builds all libraries and executables (without tests/benchmarks)
